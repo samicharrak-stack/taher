@@ -46,7 +46,7 @@ module.exports = {
             
             const reminderEmbed = createStyledEmbed(guild, '⏰ وقت الـ Bump!', COLORS.warning)
               .setDescription(`حان وقت دعم السيرفر! يرجى استخدام أمر \`!bump\` أو \`/bump\` الآن.\n\nتذكير للإدارة: ${mentionText}`)
-              .setImage('https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif?ex=69a4275f&is=69a2d5df&hm=db8ea9faf6cb1686358fc51bd3746d188e98698d3e63a2c28991db24ec13d984&');
+              .setImage('https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif');
 
             channel.send({ content: `🔔 نداء للإدارة: ${mentionText}`, embeds: [reminderEmbed] });
             

@@ -130,8 +130,37 @@ function errorEmbed(title, description) {
     .setTimestamp();
 }
 
+/**
+ * سلسلة خسائر: بعد 4 خسائر متتالية، الفوز التالي يعيد 10% من الرهان (بحد 250).
+ * يُرجع مبلغ التعويض أو 0.
+ */
+function luckBonus(u, { won, bet = 0 } = {}) {
+  if (!u) return 0;
+  u.stats = u.stats || {};
+  const stake = Math.max(0, Math.floor(Number(bet) || 0));
+  if (won) {
+    const losses = u.stats.loss_streak || 0;
+    u.stats.loss_streak = 0;
+    u.stats.win_streak = (u.stats.win_streak || 0) + 1;
+    if (losses >= 4 && stake > 0) {
+      const bonus = Math.min(250, Math.floor(stake * 0.1));
+      if (bonus > 0) {
+        u.balance = (Number(u.balance) || 0) + bonus;
+        u.stats.luck_bonus = (u.stats.luck_bonus || 0) + bonus;
+        u.luckNote = bonus;
+        return bonus;
+      }
+    }
+    return 0;
+  }
+  u.stats.win_streak = 0;
+  u.stats.loss_streak = (u.stats.loss_streak || 0) + 1;
+  return 0;
+}
+
 function balanceFooter(u) {
-  return { text: `الرصيد: ${fmt(u.balance)} ${CURRENCY_NAME}  •  XP: ${fmt(u.xp)}` };
+  const extra = u?.luckNote ? `  •  🍀 تعويض +${fmt(u.luckNote)}` : '';
+  return { text: `الرصيد: ${fmt(u.balance)} ${CURRENCY_NAME}  •  XP: ${fmt(u.xp)}${extra}` };
 }
 
 function playAgainRow(customId, label = '🔁 جولة أخرى', extra = []) {
@@ -186,6 +215,6 @@ module.exports = {
   fmt, getUser, saveUser, bumpStat,
   validateBet, brandedEmbed, gameEmbed, gifEmbed,
   winEmbed, loseEmbed, tieEmbed, errorEmbed,
-  balanceFooter, playAgainRow, disabledRow, safeReply, progressBar,
+  luckBonus, balanceFooter, playAgainRow, disabledRow, safeReply, progressBar,
   pickGif
 };

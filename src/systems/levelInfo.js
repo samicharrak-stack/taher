@@ -1,16 +1,38 @@
 // 📈 levelInfo v21 — معلومات المستوى الموحدة (الترتيب في السيرفر، اللقب، المكافأة القادمة، الشارات، سلسلة النشاط)
 const config = require('../config');
 
-/** ألقاب حسب المستوى */
+/** مسارات مرتبة: كل مسار يغطي شريحة مستويات وله لون ثابت في البطاقات */
+const TRACKS = [
+  { id: 'start', from: 1, to: 9, name: 'البداية', color: '#34f5c5' },
+  { id: 'active', from: 10, to: 24, name: 'النشاط', color: '#5ee7ff' },
+  { id: 'star', from: 25, to: 49, name: 'النجوم', color: '#7b6cff' },
+  { id: 'elite', from: 50, to: 74, name: 'النخبة', color: '#ffd166' },
+  { id: 'legend', from: 75, to: 99, name: 'الأساطير', color: '#ff5e8a' },
+  { id: 'myth', from: 100, to: Infinity, name: 'ما بعد الأسطورة', color: '#f4f7ff' },
+];
+
+/** ألقاب حسب المستوى — مرتبة تصاعدياً داخل المسارات */
 const TITLES = [
   [1, '🌱 عضو جديد'], [5, '💬 متفاعل'], [10, '⭐ نشيط'], [15, '🔥 مميز'], [20, '💎 نجم السيرفر'],
-  [30, '👑 نخبة'], [40, '🌌 أسطورة'], [50, '🐉 أسطورة خالدة'], [75, '☄️ كائن كوني'], [100, '♾️ ما بعد الأسطورة'],
+  [25, '✨ نجم صاعد'], [30, '👑 نخبة'], [40, '🌌 أسطورة'], [50, '🐉 أسطورة خالدة'],
+  [60, '🏅 حارس السيرفر'], [75, '☄️ كائن كوني'], [100, '♾️ ما بعد الأسطورة'],
 ];
 const titleFor = (level) => {
   let t = TITLES[0][1];
   for (const [l, name] of TITLES) if (level >= l) t = name;
   return t;
 };
+
+function trackFor(level) {
+  return TRACKS.find((t) => level >= t.from && level <= t.to) || TRACKS[0];
+}
+
+/** اللقب التالي وكم مستوى يفصله */
+function nextTitle(level) {
+  const nxt = TITLES.find(([l]) => l > level);
+  if (!nxt) return null;
+  return { level: nxt[0], name: nxt[1], left: nxt[0] - level };
+}
 
 /** شارات تلقائية من الإحصائيات */
 function badgesFor(u = {}) {
@@ -93,9 +115,9 @@ function levelSnapshot(g, guild, userId, xpForLevel) {
   } catch {}
   return {
     u, level, totalXP: total, xp: Math.max(0, total - base), nextXP: Math.max(1, next - base),
-    rank, totalUsers, prestige: u.prestige || 0, title: titleFor(level), nextReward, badges: badgesFor(u),
-    streak: u.xp_streak || 0,
+    rank, totalUsers, prestige: u.prestige || 0, title: titleFor(level), track: trackFor(level), nextTitle: nextTitle(level),
+    nextReward, badges: badgesFor(u), streak: u.xp_streak || 0,
   };
 }
 
-module.exports = { TITLES, titleFor, badgesFor, serverRank, nextLevelRole, roleAtLevel, touchStreak, levelSnapshot };
+module.exports = { TITLES, TRACKS, titleFor, trackFor, nextTitle, badgesFor, serverRank, nextLevelRole, roleAtLevel, touchStreak, levelSnapshot };

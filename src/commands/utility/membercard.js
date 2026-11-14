@@ -32,7 +32,7 @@ module.exports = {
         title: snap.streak > 1 ? `${snap.title} · 🔥 ${snap.streak} يوم متتالي` : snap.title,
       });
       if (card?.buffer) {
-        return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: 'membercard.png' })] });
+        return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'membercard.png' })] });
       }
     } catch {}
     return interaction.editReply?.({ content: `🪪 **${name}** — مستوى ${snap.level} • ترتيب #${snap.rank}` }) || interaction.reply({ content: `🪪 **${name}** — مستوى ${snap.level}` });

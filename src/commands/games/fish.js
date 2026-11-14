@@ -14,13 +14,17 @@ const FISHES = [
   { name: 'حبار',              emoji: '🦑', value: 180,  weight: 8,  rarity: '🟦 نادر',       color: 0x4FA3FF },
   { name: 'أخطبوط',            emoji: '🐙', value: 250,  weight: 5,  rarity: '🟦 نادر',       color: 0x4FA3FF },
   { name: 'سمكة ذهبية مدارية',emoji: '🐡', value: 400,  weight: 3,  rarity: '🟣 أسطوري',     color: 0x8E6CFF },
-  { name: 'كنز بحري',          emoji: '🪙', value: 800,  weight: 1,  rarity: '⭐ أسطوري خالص', color: 0xFFD76A }
+  { name: 'كنز بحري',          emoji: '🪙', value: 800,  weight: 1,  rarity: '⭐ أسطوري خالص', color: 0xFFD76A },
+  { name: 'دولفين',            emoji: '🐬', value: 320,  weight: 4,  rarity: '🟣 نادر جداً',   color: 0x5ee7ff },
+  { name: 'قرش',               emoji: '🦈', value: 1100, weight: 1,  rarity: '⭐ أسطوري خالص', color: 0xff5e8a }
 ];
 const MISS_EVENTS = [
   'ابتلعت السمكة الطُعم وهربت!',
   'انكسر الخيط في اللحظة الأخيرة!',
   'قاومت حتى انفلتت منك!',
-  'الموجة أفسدت صيدتك!'
+  'الموجة أفسدت صيدتك!',
+  'نورس خطف الطُعم قبل ما توصل!',
+  'السمكة كانت أذكى منك هالمرة!'
 ];
 const TOTAL = FISHES.reduce((a, b) => a + b.weight, 0);
 function pickFish() {
@@ -83,6 +87,9 @@ module.exports = {
       setEmbedMedia(loseE, 'fish', 'miss');
       loseE.setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }));
       u.last_fish = now;
+      u.balance = (u.balance || 0) + 15;
+      u.xp = (u.xp || 0) + 5;
+      loseE.setFooter({ text: `تعويض الصيد: +15 ${CURRENCY} · +5 XP` });
       saveUser(guildId, g);
       return interaction.editReply({ embeds: [loseE], components: [] }).catch(() => {});
     }

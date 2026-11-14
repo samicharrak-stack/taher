@@ -10,16 +10,16 @@ const GAME_MEDIA = {
 
   // 🎰 SLOTS
   slots: {
-    spin:    'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXE4dHJieTB0bHZyaHYxeHIzbHd4ZWZhNHc3b2x6aWU0cmIyZHdmbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjI6hkM8YEdxFT44/giphy.gif',
+    spin:    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     win:     'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGlnMHczZm1wM2E4enFsajFoenZicjJlc2VqZzQ5b3VtcGRhYm1zaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4lOMA8JKSnL9Uk/giphy.gif',
     jackpot: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHM4cnNmaGp3Y3gyeGdjaXp0d3hkNW92dHlqbnp0cnd3OGJ4aGFyMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xKaR836UJOYeOc/giphy.gif',
     lose:    'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZsZzk1YjN5ZjNzdm1rbXBqOW0xcWdubXVwazRiZnVjNXR3bGFhbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlBO7eyXzSZkJri/giphy.gif',
-    bg:      'https://i.postimg.cc/GmdGJLFC/slots-bg.gif'
+    bg:      'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   },
 
   // 🎡 ROULETTE
   roulette: {
-    spin:  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExanZlYmYzb3hsMDB3dHU2dXpmZGhmd2t0eW1wNXRjajV4c3VkcGpudyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKu5aIDY9xols5i/giphy.gif',
+    spin:  'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     win:   'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGlnMHczZm1wM2E4enFsajFoenZicjJlc2VqZzQ5b3VtcGRhYm1zaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4lOMA8JKSnL9Uk/giphy.gif',
     lose:  'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZsZzk1YjN5ZjNzdm1rbXBqOW0xcWdubXVwazRiZnVjNXR3bGFhbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlBO7eyXzSZkJri/giphy.gif',
     table: 'https://i.imgur.com/WGnHPgt.png'
@@ -54,7 +54,7 @@ const GAME_MEDIA = {
 
   // 🎣 FISHING
   fish: {
-    cast:    'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYzBseHkxaWtmenV2ZGphYm1qazJqajE3cXh4OXR1d3RkNm5mZGlheSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjI5VtyvAbQA3LkA/giphy.gif',
+    cast:    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     catch:   'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGlnMHczZm1wM2E4enFsajFoenZicjJlc2VqZzQ5b3VtcGRhYm1zaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4lOMA8JKSnL9Uk/giphy.gif',
     miss:    'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZsZzk1YjN5ZjNzdm1rbXBqOW0xcWdubXVwazRiZnVjNXR3bGFhbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlBO7eyXzSZkJri/giphy.gif',
     legendary: 'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHM4cnNmaGp3Y3gyeGdjaXp0d3hkNW92dHlqbnp0cnd3OGJ4aGFyMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xKaR836UJOYeOc/giphy.gif',
@@ -63,7 +63,7 @@ const GAME_MEDIA = {
 
   // 🪙 COINFLIP
   coinflip: {
-    flip:  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExdXB3aHVyMm9qY255aHl4czZwdXZvdTZnNGV1NDl3aXNubjFlN2JvNyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjHZhG9COPG3S5ig/giphy.gif',
+    flip:  'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     heads: 'https://i.imgur.com/7mEo7tA.png',
     tails: 'https://i.imgur.com/UbUgV1a.png',
     win:   'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGlnMHczZm1wM2E4enFsajFoenZicjJlc2VqZzQ5b3VtcGRhYm1zaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4lOMA8JKSnL9Uk/giphy.gif',
@@ -72,7 +72,7 @@ const GAME_MEDIA = {
 
   // 🎲 DICE / GUESS
   dice: {
-    roll:  'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGh2bmxib3Q5MWJ6OGZmaHcwbmd3eHpxeGVwcGlkMHFqZmk2ajI5MCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/7LLHlDZlxnXD1zQWPZ/giphy.gif',
+    roll:  'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     win:   'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGlnMHczZm1wM2E4enFsajFoenZicjJlc2VqZzQ5b3VtcGRhYm1zaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4lOMA8JKSnL9Uk/giphy.gif',
     lose:  'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZsZzk1YjN5ZjNzdm1rbXBqOW0xcWdubXVwazRiZnVjNXR3bGFhbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlBO7eyXzSZkJri/giphy.gif'
   },
@@ -87,7 +87,7 @@ const GAME_MEDIA = {
   // 📈 STOCKS
   stocks: {
     up:    'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWJsOHBmZjRmYzFka2x4bnJ4azhkdnF3NTZtZzFranpxMWc3aHlseCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46Cy1rHbQ92uuLXa/giphy.gif',
-    down:  'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeW53ZWs5azNsajU2b3A4Y2Uxbjl2bmtzbGF4c2Y1MDNxZGJodGJtdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT9IgG50Lg7rusRgXu/giphy.gif',
+    down:  'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     chart: 'https://i.imgur.com/ky9CXGT.gif'
   },
 
@@ -115,7 +115,7 @@ const GAME_MEDIA = {
     lose:     'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZsZzk1YjN5ZjNzdm1rbXBqOW0xcWdubXVwazRiZnVjNXR3bGFhbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlBO7eyXzSZkJri/giphy.gif',
     celebrate:'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHM4cnNmaGp3Y3gyeGdjaXp0d3hkNW92dHlqbnp0cnd3OGJ4aGFyMiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oz8xKaR836UJOYeOc/giphy.gif',
     levelup:  'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNGx4anB0ZjYzaHpuNW1vdmJ3bWhvaGt4MXVtZmZ1MzEydWZ6ZGowbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lp5K5ypNRhPmLRmX91/giphy.gif',
-    loading:  'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWpzY2huMW9pZXZraWt5czh0dXh3a2FpenZtY3VoaGhwNWN6YXJpYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjI6hkM8YEdxFT44/giphy.gif'
+    loading:  'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   }
 };
 
@@ -168,7 +168,7 @@ const DUNGEON_MEDIA = {
     boss:     null, // uses boss image
     treasure: 'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGlnMHczZm1wM2E4enFsajFoenZicjJlc2VqZzQ5b3VtcGRhYm1zaSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26u4lOMA8JKSnL9Uk/giphy.gif',
     fountain: 'https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWJsOHBmZjRmYzFka2x4bnJ4azhkdnF3NTZtZzFranpxMWc3aHlseCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l46Cy1rHbQ92uuLXa/giphy.gif',
-    shrine:   'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWpzY2huMW9pZXZraWt5czh0dXh3a2FpenZtY3VoaGhwNWN6YXJpYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjI6hkM8YEdxFT44/giphy.gif',
+    shrine:   'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
     trap:     'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbGZsZzk1YjN5ZjNzdm1rbXBqOW0xcWdubXVwazRiZnVjNXR3bGFhbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlBO7eyXzSZkJri/giphy.gif',
     merchant: 'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExOWtzYzVnenFmbGlvbjk4dWFyY2ZjNzFsdng3eGdnNm9wNjZ3OXVtYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oKIPEqDGUULpEU0aQ/giphy.gif'
   },

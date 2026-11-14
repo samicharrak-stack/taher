@@ -12,6 +12,7 @@ module.exports = {
     .addIntegerOption(o => o.setName('amount').setDescription('المبلغ').setRequired(true).setMinValue(1)),
   async execute(interaction) {
     const target = interaction.options.getUser('user');
+    if (!target) return interaction.reply({ content: '📝 الاستخدام: `تحويل @عضو المبلغ` — مثال: `تحويل @سامي 500`', ephemeral: true });
     const amount = interaction.options.getInteger('amount');
     const guildId = interaction.guild.id;
     const userId = interaction.user.id;

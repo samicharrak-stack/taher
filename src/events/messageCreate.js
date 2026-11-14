@@ -65,7 +65,7 @@ module.exports = {
 
         const thanksEmbed = createStyledEmbed(message, '🚀 شكرًا على الـ Bump!', COLORS.success)
           .setDescription(`شكراً لك <@${bumperId}> على دعم السيرفر!\n\n🎁 لقد حصلت على:\n💰 **${reward.toLocaleString()}** جواهر\n⭐ **${xpReward.toLocaleString()}** خبرة (XP)`)
-          .setImage('https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif');
+          .setImage('https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif');
 
         return message.channel.send({ content: `✅ شكرًا <@${bumperId}>!`, embeds: [thanksEmbed] });
       }
@@ -177,6 +177,17 @@ module.exports = {
       await cmd.execute(interactionShim);
     } catch (error) {
       logger.error(`Error executing text command ${finalCommandName}: ${error.message}`);
+      try {
+        const j = cmd.data?.toJSON?.() || {};
+        const opts = (j.options || []).filter(o => o.type > 2);
+        const subs = (j.options || []).filter(o => o.type === 1).map(o => o.name);
+        const missing = /null|undefined/.test(error.message);
+        let txt = missing ? '⚠️ ناقص معلومات في الأمر.' : '❌ صار خطأ أثناء تنفيذ الأمر، جرّب مرة ثانية.';
+        if (missing && opts.length) txt += `\n📝 الاستخدام: \`${finalCommandName} ${opts.map(o => o.required ? `<${o.name}>` : `[${o.name}]`).join(' ')}\``;
+        if (missing && subs.length) txt += `\n📂 الأوامر الفرعية: ${subs.map(x => `\`${x}\``).join(' ، ')}`;
+        if (missing) txt += '\n💡 مثال: منشن العضو أو القناة أو الرتبة بعد الأمر.';
+        await message.reply({ content: txt, allowedMentions: { repliedUser: false } }).catch(() => {});
+      } catch {}
     }
   }
 };

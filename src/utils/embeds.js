@@ -62,19 +62,19 @@ function createProgressBar(current, max, length = 10, style = 'modern') {
 
 const GIFS = {
   welcome: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif?ex=69b2a7df&is=69b1565f&hm=df729c870d6004d37b59baeea0c1ae3cc2594844f2f6ee636fdb1171990a01ce&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   levelUp: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=69a8292d&is=69a6d7ad&hm=5522c25156dc3411172e7425fd5d24ed0fd00d1737a334989c426106dd5ca20f&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   daily: [
     'https://img.itch.zone/aW1nLzE1MjA3MDg5LmdpZg==/originalm/kSgtey.gif'
   ],
   taskComplete: [
-    'https://img.itch.zone/aW1nLzIyMzcxNzA1LmdpZg==/originalm/5Umx6Q.gif'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   afkReturn: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=69a8292d&is=69a6d7ad&hm=5522c25156dc3411172e7425fd5d24ed0fd00d1737a334989c426106dd5ca20f&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   dungeon_intro: [
     'https://image.tmdb.org/t/p/original/foLRVFCsbm8Y3cbanU1D1YOzrC6.jpg'
@@ -122,22 +122,22 @@ const GIFS = {
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRW-101jYrQ-3zH_r9Q6pHOz82oti5b_O0RAw&s'
   ],
   casino: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472748838665060362/standard.gif?ex=69aeba7d&is=69ad68fd&hm=28bb9b76388fff5df30b9cd82cb25cb8191f5a4262df476de073f82666b51062&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   farm: [
     'https://i.postimg.cc/65VKKCdP/dp2kuk914o9y_gif_1731_560.gif'
   ],
   ticket: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472748838665060362/standard.gif?ex=69aeba7d&is=69ad68fd&hm=28bb9b76388fff5df30b9cd82cb25cb8191f5a4262df476de073f82666b51062&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   rank: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   balance: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472748838665060362/standard.gif?ex=69aeba7d&is=69ad68fd&hm=28bb9b76388fff5df30b9cd82cb25cb8191f5a4262df476de073f82666b51062&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ],
   info: [
-    'https://cdn.discordapp.com/attachments/1470839860594999593/1472748838665060362/standard.gif?ex=69aeba7d&is=69ad68fd&hm=28bb9b76388fff5df30b9cd82cb25cb8191f5a4262df476de073f82666b51062&'
+    'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'
   ]
 };
 

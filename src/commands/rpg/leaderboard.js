@@ -68,7 +68,7 @@ module.exports = {
           guildName: interaction.guild.name,
         });
         if (card && card.buffer) {
-          return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: 'leaderboard.png' })] });
+          return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'leaderboard.png' })] });
         }
       } catch (err) {
         console.error('leaderboard card failed:', err);

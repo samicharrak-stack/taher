@@ -57,7 +57,7 @@ module.exports = {
     const end = async (i, status, note) => {
       ended = true; col.stop('done');
       const payout = status === 'lose' ? 0 : Math.floor(bet * mult);
-      const u = K.settle(guildId, userId, payout, { highlow_count: 1, ...(payout > bet ? { highlow_wins: 1 } : {}) });
+      const u = K.settle(guildId, userId, payout, { _bet: bet, highlow_count: 1, ...(payout > bet ? { highlow_wins: 1 } : {}) });
       const p = await view(status, note, u);
       if (i) await i.update(p).catch(() => interaction.editReply(p).catch(() => {}));
       else await interaction.editReply(p).catch(() => {});

@@ -1,7 +1,7 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const kit = require('../../utils/cardKit');
 const {
-  fmt, validateBet, saveUser, bumpStat,
+  fmt, validateBet, saveUser, bumpStat, luckBonus,
   brandedEmbed, winEmbed, loseEmbed, tieEmbed,
   balanceFooter, safeReply, CURRENCY, getUser
 } = require('../../utils/gameHelpers');
@@ -102,6 +102,7 @@ module.exports = {
       const win = payout(bet, choice, n);
       bumpStat(u, 'roulette_count');
       if (win > 0) { u.balance += win; u.xp += 80; bumpStat(u, 'roulette_wins'); }
+      const bonus = luckBonus(u, { won: win > 0, bet });
       saveUser(guildId, g);
 
       const net = win - bet;
@@ -109,7 +110,7 @@ module.exports = {
       const finalEmbed = isWin ? winEmbed(interaction, 'فوز يا بطل!') : loseEmbed(interaction, 'خسارة هذه المرة');
       finalEmbed.setDescription(
         `🎯 **الرقم:** \`${n}\` ${c.emoji} ${c.name} • 🎰 **رهانك:** ${LABELS[choice]}\n` +
-        (isWin ? `💰 **+${fmt(net)}** ${CURRENCY} *(صافي ربح)*` : `💸 **-${fmt(bet)}** ${CURRENCY}`)
+        (isWin ? `💰 **+${fmt(net)}** ${CURRENCY} *(صافي ربح)*${bonus ? `\n🍀 تعويض الحظ **+${fmt(bonus)}**` : ''}` : `💸 **-${fmt(bet)}** ${CURRENCY}`)
       ).setFooter(balanceFooter(u));
       setEmbedMedia(finalEmbed, 'roulette', isWin ? 'win' : 'lose');
 
@@ -120,7 +121,7 @@ module.exports = {
           username: interaction.member?.displayName || interaction.user.username,
           avatarURL: interaction.user.displayAvatarURL({ extension: 'png', size: 256 }),
         });
-        if (card) { files.push(new AttachmentBuilder(card.buffer, { name: 'roulette.png' })); finalEmbed.setImage('attachment://roulette.png'); }
+        if (card) { files.push(new AttachmentBuilder(card.buffer, { name: card.name || 'roulette.png' })); finalEmbed.setImage(`attachment://${card.name}`); }
       } catch {}
       const again = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId(`roulette_play_${bet}`).setLabel('🎡 جولة أخرى').setStyle(ButtonStyle.Primary)

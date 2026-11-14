@@ -11,7 +11,7 @@ const { COLORS, DESIGN, getRandomGif, createStyledEmbed, createProgressBar } = r
 const ROOM_IMAGES = {
   treasure: 'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
   fountain: 'https://media2.giphy.com/media/l46Cy1rHbQ92uuLXa/giphy.gif',
-  shrine:   'https://media3.giphy.com/media/3oEjI6hkM8YEdxFT44/giphy.gif',
+  shrine:   'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
   trap:     'https://media3.giphy.com/media/l0HlBO7eyXzSZkJri/giphy.gif',
   merchant: 'https://media1.giphy.com/media/3oKIPEqDGUULpEU0aQ/giphy.gif',
   victory:  'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',

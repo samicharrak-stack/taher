@@ -1,6 +1,6 @@
 {
   "name": "sami-bot",
-  "version": "25.0.0",
+  "version": "25.3.0",
   "description": "بوت ديسكورد شامل - إشراف كامل (حظر/طرد/تحذيرات/سجل عقوبات)، اقتصاد مع سرقة، تصويت، حاسبة، ترجمة، +1000 اختصار وعبارة عربية، 6 ألعاب جديدة (صاروخ، كشط، كنز، أعلى/أقل، سباق الهجن، خمن الرقم)، أسئلة السهرة، صور لكل لعبة، بطاقات مصممة",
   "main": "src/index.js",
   "engines": {
@@ -14,7 +14,7 @@
     "dev": "node src/index.js",
     "health": "node scripts/bot-health-check.js",
     "postinstall": "node scripts/postinstall.js || true",
-    "test": "node scripts/test-level-rewards.js && node scripts/test-v21.js && node scripts/test-v22.js && node scripts/test-v23.js && node scripts/test-v24.js"
+    "test": "node scripts/test-level-rewards.js && node scripts/test-v21.js && node scripts/test-v22.js && node scripts/test-v23.js && node scripts/test-v24.js && node scripts/smoke-all.js"
   },
   "keywords": [
     "discord",

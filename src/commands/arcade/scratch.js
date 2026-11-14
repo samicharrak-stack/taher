@@ -49,7 +49,7 @@ module.exports = {
       if (ended) return; ended = true; col.stop('done');
       const result = A.scratchResult(cells);
       const payout = Math.floor(bet * result.mult);
-      const u = K.settle(guildId, userId, payout, { scratch_count: 1, ...(payout > 0 ? { scratch_wins: 1 } : {}) });
+      const u = K.settle(guildId, userId, payout, { _bet: bet, scratch_count: 1, ...(payout > 0 ? { scratch_wins: 1 } : {}) });
       const e = (payout > 0 ? H.winEmbed : H.loseEmbed)(interaction, payout > 0 ? `بطاقة الكشط — ${result.symbol} ${result.name} ×${result.mult}` : 'بطاقة الكشط — لا يوجد تطابق',
         payout > 0 ? `💰 **+${H.fmt(payout - bet)}** ${H.CURRENCY} (ربحت ${H.fmt(payout)})` : `💸 **-${H.fmt(bet)}** ${H.CURRENCY}`).setFooter(H.balanceFooter(u));
       const card = await K.safeCard(() => cards.scratchCard({ cells, revealed: [...Array(9).keys()], done: true, result, bet, net: payout - bet, ...K.who(interaction) }));

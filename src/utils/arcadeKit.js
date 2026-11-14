@@ -18,8 +18,12 @@ async function safeCard(fn) { try { return await fn(); } catch (e) { return null
 /** يعيد قراءة المستخدم من التخزين، يطبّق التعديل ثم يحفظ (يتجنب الكتابة فوق تغييرات حدثت أثناء اللعبة) */
 function settle(guildId, userId, delta, stats = {}) {
   const { g, u } = H.getUser(guildId, userId);
+  const stake = Number(stats._bet) || 0;
+  const rest = { ...stats };
+  delete rest._bet;
   u.balance = Math.max(0, (Number(u.balance) || 0) + delta);
-  for (const [k, v] of Object.entries(stats)) H.bumpStat(u, k, v);
+  for (const [k, v] of Object.entries(rest)) H.bumpStat(u, k, v);
+  if (stake > 0 && delta >= 0) H.luckBonus(u, { won: delta > stake, bet: stake });
   H.saveUser(guildId, g);
   return u;
 }

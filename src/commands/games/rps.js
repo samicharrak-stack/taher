@@ -5,7 +5,7 @@ const kit = require('../../utils/cardKit');
 async function withCard(embed, data) {
   try {
     const card = await kit.rpsCard(data);
-    if (card) { embed.setImage('attachment://rps.png'); return [new AttachmentBuilder(card.buffer, { name: 'rps.png' })]; }
+    if (card) { embed.setImage(`attachment://${card.name}`); return [new AttachmentBuilder(card.buffer, { name: card.name })]; }
   } catch {}
   return [];
 }

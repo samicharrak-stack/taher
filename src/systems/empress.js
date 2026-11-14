@@ -2,11 +2,11 @@ const { readGuild } = require('../utils/guildStorage');
 const { EmbedBuilder } = require('discord.js');
 
 const EMPRESS_GIFS = {
-  love: ['https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=699eeead&is=699d9d2d&hm=8e40c5151620d1fead4f08cfbdc1bd8404c6473ad607fd3346eec0ff7f7b6d52&'],
-  happy: ['https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=699eeead&is=699d9d2d&hm=8e40c5151620d1fead4f08cfbdc1bd8404c6473ad607fd3346eec0ff7f7b6d52&'],
-  think: ['https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=699eeead&is=699d9d2d&hm=8e40c5151620d1fead4f08cfbdc1bd8404c6473ad607fd3346eec0ff7f7b6d52&'],
-  wave: ['https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=699eeead&is=699d9d2d&hm=8e40c5151620d1fead4f08cfbdc1bd8404c6473ad607fd3346eec0ff7f7b6d52&'],
-  default: ['https://cdn.discordapp.com/attachments/1470839860594999593/1472755483982041149/metal-gear-big-boss.gif?ex=699eeead&is=699d9d2d&hm=8e40c5151620d1fead4f08cfbdc1bd8404c6473ad607fd3346eec0ff7f7b6d52&']
+  love: ['https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'],
+  happy: ['https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'],
+  think: ['https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'],
+  wave: ['https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif'],
+  default: ['https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif']
 };
 
 const recentResponses = new Map();

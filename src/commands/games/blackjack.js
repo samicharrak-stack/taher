@@ -63,7 +63,7 @@ module.exports = {
           username, bet: stake, player, dealer, playerTotal: total(player), dealerTotal: total(dealer),
           hideDealer: !reveal, status,
         });
-        if (card) { payload.files = [new AttachmentBuilder(card.buffer, { name: 'blackjack.png' })]; e.setImage('attachment://blackjack.png'); }
+        if (card) { payload.files = [new AttachmentBuilder(card.buffer, { name: card.name || 'blackjack.png' })]; e.setImage(`attachment://${card.name}`); }
       } catch {}
       return payload;
     };

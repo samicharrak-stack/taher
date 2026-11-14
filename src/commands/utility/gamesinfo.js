@@ -62,7 +62,7 @@ module.exports = {
     const files = [];
     try {
       const card = await require('../../utils/cardKit').gamesMenuCard({ sections, botName: interaction.client.user.username });
-      if (card) { files.push(new AttachmentBuilder(card.buffer, { name: 'games.png' })); embed.setImage('attachment://games.png'); }
+      if (card) { files.push(new AttachmentBuilder(card.buffer, { name: card.name || 'games.png' })); embed.setImage(`attachment://${card.name}`); }
     } catch {}
     if (!files.length) {
       for (const s of sections) embed.addFields({ name: s.title, value: s.games.map((g) => `${g.icon} **${g.name}** — \`${g.trigger}\` • ${g.cooldown}`).join('\n') });

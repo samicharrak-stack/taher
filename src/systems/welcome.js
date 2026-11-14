@@ -116,7 +116,7 @@ async function handleMemberJoin(member) {
     let attachment = null;
     try {
       const canvasBuffer = await buildCanvas(member, {
-        bgImage: cfg.bgImage || 'https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif',
+        bgImage: cfg.bgImage || 'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif',
         bgColor: cfg.bgColor || '#23272A'
       });
       if (canvasBuffer) {
@@ -125,10 +125,10 @@ async function handleMemberJoin(member) {
       } else if (cfg.image) {
         welcomeEmbed.setImage(cfg.image);
       } else {
-        welcomeEmbed.setImage('https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif');
+        welcomeEmbed.setImage('https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif');
       }
     } catch (e) {
-      welcomeEmbed.setImage(cfg.image || 'https://cdn.discordapp.com/attachments/1470839860594999593/1472741198572683470/standard.gif');
+      welcomeEmbed.setImage(cfg.image || 'https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif');
     }
  
     // 5. Send the message

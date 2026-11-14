@@ -258,7 +258,7 @@ module.exports = {
         })
         .setThumbnail(source.user.displayAvatarURL({ dynamic: true, size: 256 }))
         .setDescription(`**السبب:** ${reason}\n🎁 الهدية: **💎 ${config.AFK_GIFT}**`)
-        .setImage('https://i.postimg.cc/mD8RzG1L/welcome.gif');
+        .setImage('https://media0.giphy.com/media/26u4lOMA8JKSnL9Uk/giphy.gif');
 
       await sendReplyAndDelete(source, { embeds: [embed] }, { deleteOriginalAfterReply: isPrefixCommand });
     }
