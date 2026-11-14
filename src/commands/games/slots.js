@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, AttachmentBuilder } = require('discord.js');
 const {
-  fmt, validateBet, saveUser, bumpStat,
+  fmt, validateBet, saveUser, bumpStat, luckBonus,
   brandedEmbed, winEmbed, loseEmbed,
   balanceFooter, playAgainRow, safeReply, CURRENCY
 } = require('../../utils/gameHelpers');
@@ -83,6 +83,7 @@ module.exports = {
     u.balance += winAmount;
     bumpStat(u, 'slots_count');
     if (multiplier > 0) bumpStat(u, 'slots_wins');
+    const bonus = luckBonus(u, { won: multiplier > 0, bet });
     saveUser(guildId, g);
 
     // ─── Final Embed ──────────────────────────────────────
@@ -126,9 +127,9 @@ module.exports = {
         pool: SYMBOLS.map((x) => x.s),
       });
       if (card) {
-        files.push(new AttachmentBuilder(card.buffer, { name: 'slots.png' }));
-        finalEmbed.setImage('attachment://slots.png').setDescription(isWin
-          ? `${winType} — 💰 **+${fmt(winAmount - bet)}** ${CURRENCY} صافي *(×${multiplier})*`
+        files.push(new AttachmentBuilder(card.buffer, { name: card.name || 'slots.png' }));
+        finalEmbed.setImage(`attachment://${card.name}`).setDescription(isWin
+          ? `${winType} — 💰 **+${fmt(winAmount - bet)}** ${CURRENCY} صافي *(×${multiplier})*${bonus ? `\n🍀 تعويض الحظ **+${fmt(bonus)}**` : ''}`
           : `💸 **-${fmt(bet)}** ${CURRENCY} — جرّب مرة أخرى!`);
       }
     } catch {}

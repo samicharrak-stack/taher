@@ -55,7 +55,7 @@ module.exports = {
       const win = outcome === 'win';
       const mult = win ? A.guessMultiplier(tries.length) : 0;
       const payout = Math.floor(bet * mult);
-      const u = K.settle(guildId, userId, payout, { guess_count: 1, ...(win ? { guess_wins: 1 } : {}) });
+      const u = K.settle(guildId, userId, payout, { _bet: bet, guess_count: 1, ...(win ? { guess_wins: 1 } : {}) });
       const titleTxt = win ? `صح من ${tries.length === 1 ? 'أول محاولة!' : `${tries.length} محاولات`}` : outcome === 'quit' ? 'استسلمت' : outcome === 'timeout' ? 'انتهى الوقت' : 'نفدت المحاولات';
       const e = (win ? H.winEmbed : H.loseEmbed)(interaction, `خمن الرقم — ${titleTxt}`,
         `🔢 الرقم السري: **${target}**\n${win ? `✨ المضاعف ×${mult} — 💰 **+${H.fmt(payout - bet)}** ${H.CURRENCY}` : `💸 **-${H.fmt(bet)}** ${H.CURRENCY}`}`).setFooter(H.balanceFooter(u));

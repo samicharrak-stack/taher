@@ -45,7 +45,7 @@ module.exports = {
         avatarURL: target.displayAvatarURL({ extension: 'png', size: 256 }),
       });
       if (card && card.buffer) {
-        return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: 'balance.png' })] });
+        return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'balance.png' })] });
       }
     } catch (err) {
       console.error('balance card render failed:', err);

@@ -33,7 +33,7 @@ module.exports = {
     const picked = choice ? Number(choice.customId.split('_').pop()) : Math.floor(Math.random() * 3);
     const prize = chests[picked];
     const payout = Math.floor(bet * prize.m);
-    const u = K.settle(guildId, userId, payout, { treasure_count: 1, ...(payout > bet ? { treasure_wins: 1 } : {}) });
+    const u = K.settle(guildId, userId, payout, { _bet: bet, treasure_count: 1, ...(payout > bet ? { treasure_wins: 1 } : {}) });
     const net = payout - bet;
     const fe = (net > 0 ? H.winEmbed : H.loseEmbed)(interaction, `صناديق الكنز — ${prize.emoji} ${prize.label}`,
       `${choice ? '' : '⏱️ انتهى الوقت فاخترنا لك صندوقاً عشوائياً\n'}${net >= 0 ? `💰 **+${H.fmt(net)}**` : `💸 **-${H.fmt(-net)}**`} ${H.CURRENCY}\n\n${chests.map((c, i) => `${i === picked ? '👉' : '▫️'} الصندوق ${i + 1}: ${c.emoji} ${c.label}`).join('\n')}`).setFooter(H.balanceFooter(u));

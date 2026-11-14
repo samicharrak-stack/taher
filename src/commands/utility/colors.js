@@ -42,7 +42,7 @@ module.exports = {
     const files = [];
     try {
       const card = await kit.colorsCard({ colors: COLORS_LIST, current, guildName: interaction.guild.name });
-      if (card) { files.push(new AttachmentBuilder(card.buffer, { name: 'colors.png' })); embed.setImage('attachment://colors.png'); }
+      if (card) { files.push(new AttachmentBuilder(card.buffer, { name: card.name || 'colors.png' })); embed.setImage(`attachment://${card.name}`); }
     } catch {}
     const row = new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId(`${id}_pick`).setPlaceholder('🎨 اختر لونك...')
       .addOptions([...COLORS_LIST.map((c, i) => ({ label: `${i + 1}. ${c.name}`, value: String(i), description: c.hex })), { label: 'إزالة اللون', value: 'none', emoji: '🚫' }].slice(0, 25)));

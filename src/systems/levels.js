@@ -8,41 +8,10 @@ let Canvas;
 try { Canvas = require('@napi-rs/canvas'); } catch (e) { Canvas = null; }
 
 const cooldowns = new Map();
+const { calculateLevel, xpForLevel } = require('./xpCurve');
 
 
 const voiceTimers = new Map(); // Tracking voice activity
-
-/**
- * Calculates current level based on total XP
- * Formula based on Mee6-like systems: 
- * Level 1: 0 XP
- * Level 2: 100 XP
- * Level 3: 255 XP (100 + 155)
- * Level 4: 475 XP (255 + 220)
- * Level 10: 5275 XP
- */
-function calculateLevel(xp) {
-  if (!xp || xp < 100) return 1;
-  let level = 1;
-  while (xpForLevel(level + 1) <= xp) {
-    level++;
-  }
-  return level;
-}
-
-/**
- * Calculates total XP required to reach a specific level
- * Formula (eased): Sum_{i=0}^{L-1} (4i^2 + 40i + 80)
- * هذا يُسهّل المستويات تدريجياً مقارنة بالصيغة السابقة
- */
-function xpForLevel(level) {
-  if (level <= 1) return 0;
-  let total = 0;
-  for (let i = 0; i < level - 1; i++) {
-    total += 4 * Math.pow(i, 2) + 40 * i + 80;
-  }
-  return total;
-}
 
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;

@@ -99,14 +99,14 @@ module.exports = {
           commands: data.byCat[k].map((cmd) => (cmd.aliases || []).find((a) => /[\u0600-\u06FF]/.test(a)) || cmd.data.name),
         })),
       });
-      if (card) homeFile = card.buffer;
+      if (card) homeFile = card;
     } catch {}
     const render = () => {
       if (cat === 'home') {
         const e = homeEmbed(interaction, data);
-        if (!homeFile) return { embeds: [e], components: [menu(id, cat)], attachments: [] };
-        e.setImage('attachment://help.png');
-        return { embeds: [e], files: [new AttachmentBuilder(homeFile, { name: 'help.png' })], components: [menu(id, cat)], attachments: [] };
+        if (!homeFile?.buffer) return { embeds: [e], components: [menu(id, cat)], attachments: [] };
+        e.setImage(`attachment://${homeFile.name || 'help.png'}`);
+        return { embeds: [e], files: [new AttachmentBuilder(homeFile.buffer, { name: homeFile.name || 'help.png' })], components: [menu(id, cat)], attachments: [] };
       }
       const pages = Math.max(1, Math.ceil((data.byCat[cat] || []).length / PER_PAGE));
       const comps = [menu(id, cat)];

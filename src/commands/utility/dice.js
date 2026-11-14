@@ -70,7 +70,7 @@ module.exports = {
         }
         k.ribbon(ctx, count > 1 ? `المجموع: ${total}` : `طلع ${total}`, W / 2, H - 70, t, { size: 22, h: 46, icon: '🎲' });
         const card = await k.out(canvas, 'dice.png');
-        if (card?.buffer) return interaction.reply({ files: [new AttachmentBuilder(card.buffer, { name: 'dice.png' })] });
+        if (card?.buffer) return interaction.reply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'dice.png' })] });
       }
     } catch {}
     await interaction.reply({ content: `🎲 **${username}**: [${rolls.join('] [')}] = **${total}**` });

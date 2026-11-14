@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, AttachmentBuilder } = require('discord.js');
-const { fmt, validateBet, saveUser, bumpStat, brandedEmbed, winEmbed, loseEmbed, playAgainRow, balanceFooter, safeReply, CURRENCY } = require('../../utils/gameHelpers');
+const { fmt, validateBet, saveUser, bumpStat, luckBonus, brandedEmbed, winEmbed, loseEmbed, playAgainRow, balanceFooter, safeReply, CURRENCY } = require('../../utils/gameHelpers');
 const { COLORS } = require('../../utils/embeds');
 const { setEmbedMedia } = require('../../utils/mediaRegistry');
 
@@ -60,6 +60,7 @@ module.exports = {
     if (win) u.balance += bet; else u.balance -= bet;
     bumpStat(u, 'coinflip_count');
     if (win) bumpStat(u, 'coinflip_wins');
+    const bonus = luckBonus(u, { won: win, bet });
     saveUser(guildId, g);
 
     const finalEmbed = win
@@ -87,7 +88,7 @@ module.exports = {
         avatarURL: interaction.user.displayAvatarURL({ extension: 'png', size: 256 }),
         amount: win ? bet : -bet, balance: u.balance,
       });
-      if (card) { files.push(new AttachmentBuilder(card.buffer, { name: 'coin.png' })); finalEmbed.setImage('attachment://coin.png').setDescription(win ? `✅ **تطابق!** +${fmt(bet)} ${CURRENCY}` : `❌ **لم يتطابق!** -${fmt(bet)} ${CURRENCY}`); }
+      if (card) { files.push(new AttachmentBuilder(card.buffer, { name: card.name || 'coin.png' })); finalEmbed.setImage(`attachment://${card.name}`).setDescription(win ? `✅ **تطابق!** +${fmt(bet)} ${CURRENCY}${bonus ? `\n🍀 تعويض الحظ **+${fmt(bonus)}**` : ''}` : `❌ **لم يتطابق!** -${fmt(bet)} ${CURRENCY}`); }
     } catch {}
     const msg = await safeReply(interaction, {
       files, attachments: [],

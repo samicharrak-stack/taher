@@ -6,6 +6,13 @@
 //   custom   : { "10": 5000 } مبلغ مخصص لمستوى معين (يستبدل الحساب)
 const DEFAULT_REWARDS = { enabled: true, base: 100, perLevel: 50, custom: {} };
 
+/** مكافأة إضافية عند معالم المسارات، فوق المعادلة العادية */
+const MILESTONES = { 10: 500, 25: 2000, 50: 7500, 75: 15000, 100: 40000 };
+
+function milestoneFor(level) {
+  return MILESTONES[level] || 0;
+}
+
 function getRewardConfig(g) {
   const r = { ...DEFAULT_REWARDS, ...(g?.levels?.rewards || {}) };
   r.custom = { ...(r.custom || {}) };
@@ -30,9 +37,12 @@ function rewardForLevel(cfg, level) {
 function grantLevelReward(g, u, oldLevel, newLevel) {
   const cfg = getRewardConfig(g);
   let total = 0;
-  for (let L = oldLevel + 1; L <= newLevel; L++) total += rewardForLevel(cfg, L);
+  for (let L = oldLevel + 1; L <= newLevel; L++) {
+    total += rewardForLevel(cfg, L);
+    if (cfg.enabled && cfg.custom?.[String(L)] == null) total += milestoneFor(L);
+  }
   if (total > 0) u.balance = (Number(u.balance) || 0) + total;
   return total;
 }
 
-module.exports = { DEFAULT_REWARDS, getRewardConfig, setRewardConfig, rewardForLevel, grantLevelReward };
+module.exports = { DEFAULT_REWARDS, MILESTONES, getRewardConfig, setRewardConfig, rewardForLevel, milestoneFor, grantLevelReward };

@@ -32,7 +32,7 @@ module.exports = {
         icon: '🎯', bg: 'casino',
       });
       if (card?.buffer) {
-        return interaction.reply({ files: [new AttachmentBuilder(card.buffer, { name: 'choose.png' })] });
+        return interaction.reply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'choose.png' })] });
       }
     } catch {}
     await interaction.reply({ content: `🎯 **${username}** اخترت لك: **${pick}** (من بين ${parts.length} خيارات)` });

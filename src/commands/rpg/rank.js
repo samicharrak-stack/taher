@@ -35,11 +35,11 @@ module.exports = {
         stats: { ...(u.stats || {}), dungeon_wins: u.dungeon_wins || 0, harvests: u.farm?.totalHarvested || 0 },
         rpgClass: u.rpg?.class,
         rank: snap.rank, totalUsers: snap.totalUsers, prestige: snap.prestige,
-        title: snap.title, streak: snap.streak,
+        title: snap.track ? `${snap.track.name} · ${snap.title}` : snap.title, streak: snap.streak,
         hunterRank: hunter, nextReward: snap.nextReward, badges: snap.badges,
       });
       if (card?.buffer) {
-        return await interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: 'rank.png' })] });
+        return await interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'rank.png' })] });
       }
     } catch (err) {
       console.error('Failed to render rank card:', err);

@@ -42,7 +42,7 @@ module.exports = {
         stats.forEach(([l, v, ic], i) => k.stat(ctx, 50 + (2 - (i % 3)) * (cw + 20), 314 + Math.floor(i / 3) * 108, cw, 92, l, String(v), t, ic));
         const card = await k.out(canvas, 'server.png');
         if (card?.buffer) {
-          return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: 'server.png' })] });
+          return interaction.editReply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'server.png' })] });
         }
       }
     } catch {}

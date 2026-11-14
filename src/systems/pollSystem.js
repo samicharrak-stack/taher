@@ -89,7 +89,7 @@ async function handlePollButton(interaction) {
       avatarURL: interaction.user.displayAvatarURL({ extension: 'png', size: 256 }),
     });
     if (card?.buffer) {
-      await interaction.reply({ files: [new AttachmentBuilder(card.buffer, { name: 'poll.png' })], ephemeral: false }).catch(() => {});
+      await interaction.reply({ files: [new AttachmentBuilder(card.buffer, { name: card.name || 'poll.png' })], ephemeral: false }).catch(() => {});
     } else {
       await interaction.reply({ content: '📊 النتائج محدّثة في الإمبد بالأعلى.', ephemeral: true }).catch(() => {});
     }

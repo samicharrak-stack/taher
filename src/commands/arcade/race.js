@@ -67,7 +67,7 @@ module.exports = {
 
     const payout = A.racePayout(bet, pick, sim.winner);
     const win = payout > 0;
-    const u = K.settle(guildId, userId, payout, { race_count: 1, ...(win ? { race_wins: 1 } : {}) });
+    const u = K.settle(guildId, userId, payout, { _bet: bet, race_count: 1, ...(win ? { race_wins: 1 } : {}) });
     const w = A.RACERS.find((r) => r.id === sim.winner);
     const e = (win ? H.winEmbed : H.loseEmbed)(interaction, win ? `فاز ${mine.name}!` : `فاز ${w.name}`,
       `${sim.order.map((rid, i) => `${['🥇', '🥈', '🥉', '4️⃣'][i]} ${A.RACERS.find((r) => r.id === rid).name}`).join('  ·  ')}\n\n` +

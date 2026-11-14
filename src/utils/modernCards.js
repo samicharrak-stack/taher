@@ -105,7 +105,7 @@ function statTile(ctx, x, y, w, h, icon, label, value, p, { accent } = {}) {
   K.txt(ctx, value, x + w - 72, y + h / 2 + 22, { size: 24, color: accent || TEXT, align: 'right', maxW: w - 90 });
 }
 
-function out(canvas, name) { return { buffer: canvas.toBuffer('image/png'), name }; }
+function out(canvas, name) { return require('./motion').animateCanvas(canvas, name); }
 
 // ───────────────────────── 💰 الرصيد ─────────────────────────
 async function balanceCard({ username = 'عضو', avatarURL, wallet = 0, bank = 0, rank = null, totalUsers = 0, level = 1, currency = 'جواهر', loan = 0 }) {
@@ -114,7 +114,9 @@ async function balanceCard({ username = 'عضو', avatarURL, wallet = 0, bank = 
   const W = 1000, H = 440, p = PALETTES.wallet;
   const canvas = C.createCanvas(W, H), ctx = canvas.getContext('2d');
   backdrop(ctx, W, H, p, { seed: 11 });
-  const total = n0(wallet) + n0(bank);
+  const gross = n0(wallet) + n0(bank);
+  const net = gross - n0(loan);
+  const total = net;
 
   await avatarRing(ctx, avatarURL, W - 110, 110, 120, p, username);
   K.txt(ctx, 'المحفظة', W - 196, 78, { size: 16, weight: 'normal', color: p.a, align: 'right' });
@@ -135,13 +137,13 @@ async function balanceCard({ username = 'عضو', avatarURL, wallet = 0, bank = 
   ctx.save(); rr(ctx, cx + 30, cy + 34, 58, 44, 9); ctx.fillStyle = lin(ctx, 0, cy + 34, 0, cy + 78, ['#ffe9a8', '#d7a43a']); ctx.fill();
   ctx.strokeStyle = 'rgba(80,50,0,0.5)'; ctx.lineWidth = 1; for (let i = 1; i < 3; i++) { ctx.beginPath(); ctx.moveTo(cx + 30, cy + 34 + i * 14.6); ctx.lineTo(cx + 88, cy + 34 + i * 14.6); ctx.stroke(); } ctx.restore();
   K.emoji(ctx, '💎', cx + cw - 46, cy + 56, 40);
-  K.txt(ctx, 'إجمالي الثروة', cx + cw - 30, cy + 128, { size: 16, weight: 'normal', color: 'rgba(10,15,30,0.75)', align: 'right' });
+  K.txt(ctx, loan ? 'صافي الثروة' : 'إجمالي الثروة', cx + cw - 30, cy + 128, { size: 16, weight: 'normal', color: 'rgba(10,15,30,0.75)', align: 'right' });
   K.txt(ctx, kitAll.compact(total), cx + cw - 30, cy + 186, { size: 56, color: '#0a0f1e', align: 'right' });
   K.txt(ctx, currency, cx + 30, cy + ch - 26, { size: 18, color: '#0a0f1e' });
   K.txt(ctx, '•••• •••• ' + String(total).slice(-4).padStart(4, '0'), cx + cw - 30, cy + ch - 26, { size: 16, weight: 'normal', color: 'rgba(10,15,30,0.7)', align: 'right' });
 
   // نسبة المحفظة/البنك
-  const share = total ? n0(bank) / total : 0;
+  const share = gross ? n0(bank) / gross : 0;
   K.txt(ctx, `${Math.round(share * 100)}% من ثروتك آمنة في البنك`, W - 44, 236, { size: 15, weight: 'normal', color: SUB, align: 'right' });
   progress(ctx, 500, 252, W - 544, 14, share, PALETTES.bank);
 
@@ -213,7 +215,7 @@ async function rankCard({ username = 'عضو', avatarURL, level = 1, xp = 0, nex
   K.txt(ctx, `LVL ${level}`, acx, acy + ar + 9, { size: 18, color: '#0a0f1e', align: 'center' });
 
   const rx = W - 290;
-  K.txt(ctx, title || 'عضو نشيط', rx, 76, { size: 16, weight: 'normal', color: p.a, align: 'right', maxW: 420 });
+  K.txt(ctx, title || 'عضو نشيط', rx, 76, { size: 16, weight: 'normal', color: p.a, align: 'right', maxW: 460 });
   K.txt(ctx, username, rx, 124, { size: 42, align: 'right', maxW: 520, shadow: true });
   let cxp = rx; cxp -= chip(ctx, `🏆 #${rank || '—'}${totalUsers ? ` / ${totalUsers}` : ''}`, cxp, 144, p, { solid: true }) + 10;
   if (prestige) cxp -= chip(ctx, `🌟 بريستيج ${prestige}`, cxp, 144, p) + 10;

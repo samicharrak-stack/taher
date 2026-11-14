@@ -575,7 +575,7 @@ function footer(ctx, W, H, text) {
   ctx.fillStyle = g; ctx.fillRect(W * 0.3, H - 38, W * 0.4, 1); ctx.restore();
   txt(ctx, text, W / 2, H - 16, { size: 13, weight: 'normal', color: 'rgba(255,255,255,0.45)', align: 'center', maxW: W - 120 });
 }
-const out = async (canvas, name) => ({ buffer: await canvas.encode('png'), name });
+const out = (canvas, name) => require('./motion').animateCanvas(canvas, name);
 
 // ================= البطاقات =================
 

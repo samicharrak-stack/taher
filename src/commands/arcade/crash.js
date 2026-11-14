@@ -47,7 +47,7 @@ module.exports = {
       if (ended) return; ended = true; clearTimeout(timer); col?.stop('done');
       const m = cashed ? mult() : 0;
       const payout = cashed ? A.crashPayout(bet, m) : 0;
-      const u = K.settle(guildId, userId, payout, { crash_count: 1, ...(cashed ? { crash_wins: 1 } : {}) });
+      const u = K.settle(guildId, userId, payout, { _bet: bet, crash_count: 1, ...(cashed ? { crash_wins: 1 } : {}) });
       const e = (cashed ? H.winEmbed : H.loseEmbed)(interaction, cashed ? `الصاروخ — سحبت عند ×${m.toFixed(2)}` : `الصاروخ — انفجر عند ×${point.toFixed(2)} 💥`,
         cashed ? `💰 **+${H.fmt(payout - bet)}** ${H.CURRENCY}\n💥 كان سينفجر عند ×${point.toFixed(2)}` : `💸 **-${H.fmt(bet)}** ${H.CURRENCY}`).setFooter(H.balanceFooter(u));
       const card = await K.safeCard(() => cards.crashCard({ steps: visible.slice(0, step + 1).concat(cashed ? [] : [point]), mult: mult(), crashed: !cashed, cashed: cashed ? m : null, point, bet, net: payout - bet, ...K.who(interaction) }));

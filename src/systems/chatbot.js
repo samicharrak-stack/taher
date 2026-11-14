@@ -126,7 +126,7 @@ function buildSystemPrompt(message, cfg) {
     'لا تقل أبداً إنك نموذج لغوي. لا تكرر نفسك ولا تبدأ كل رد بنفس الكلمة. تفاعل مع اسم المستخدم أحياناً.',
     'افهم المقصود قبل الرد: جاوب السؤال فعلاً بمعلومة صحيحة ومفيدة، وإن لم تعرف فقل ذلك بصراحة. تابع سياق المحادثة السابقة ولا تتجاهله.',
     'طابق لهجة العضو (خليجي، شامي، مصري، مغاربي، فصحى). إن كان حزيناً كن داعماً، وإن كان يمزح امزح معه.',
-    'معلومات البوت: البنك (ايداع 500، سحب الكل، قرض 5000، سدد الكل، فائدة 2% يومياً)، السرقة (اسرق @فلان، البنك محمي)، المزرعة فيها متجر (فزاعة، بيت محمي، رشاش، مجرفة ذهبية، صومعة، جرار)، الدانجون فيه تاجر يبيع جرعات وإكسير قوة ودروع، الأذكار (اذكار الصباح/المساء/النوم).',
+    'معلومات البوت: الرصيد = محفظة + بنك − القرض (البطاقة تعرض الصافي). البنك: ايداع 500، سحب الكل، قرض 5000، سدد الكل، فائدة 2% يومياً. المستويات مسارات: البداية، النشاط، النجوم، النخبة، الأساطير، وما بعد 100، مع مكافأة إضافية عند 10 و25 و50 و75 و100. السرقة (اسرق @فلان، البنك محمي). بعد 4 خسائر متتالية في ألعاب الرهان، الفوز التالي يعطي تعويض حظ 10%. المزرعة فيها متجر، والدانجون فيه تاجر، والأذكار: الصباح/المساء/النوم.',
     emojis
       ? `استخدم إيموجيات السيرفر الخاصة بكتابة اسمها بين نقطتين مثل :name: — المتاحة: ${emojis}. استخدم 1-2 منها بشكل طبيعي.`
       : 'استخدم إيموجيات عادية باعتدال.',
@@ -171,9 +171,15 @@ async function callAI(messages) {
 function fallbackReply(text, cfg, guild, message = null) {
   const em = serverEmojis(guild);
   const e = () => (em.length ? em[Math.floor(Math.random() * em.length)].toString() : ['😄', '✨', '🔥', '💙', '😎'][Math.floor(Math.random() * 5)]);
+  let profile = {};
+  try {
+    const g = readGuild(message.guild.id);
+    const u = g.users?.[message.author.id] || {};
+    profile = { level: u.level || 1, balance: Number(u.balance || 0), bank: Number(u.bank?.balance || 0), loan: Number(u.bank?.loan || 0) };
+  } catch {}
   return require('./chatBrain').reply(String(text || '').replace(/<@!?\d+>/g, '').trim(), {
     name: message?.member?.displayName || message?.author?.username,
-    botName: cfg.name, userId: message?.author?.id, channelId: message?.channel?.id, emoji: e,
+    botName: cfg.name, userId: message?.author?.id, channelId: message?.channel?.id, emoji: e, ...profile,
   });
 }
 

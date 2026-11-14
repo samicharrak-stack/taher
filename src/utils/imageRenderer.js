@@ -405,7 +405,7 @@ async function renderProfileCard(data) {
     ctx.fillText(items[i].vl, sx + 78, sy + 70);
   }
 
-  return { buffer: await canvas.encode('png'), name: 'profile.png' };
+  return require('./motion').animateCanvas(canvas, 'profile.png');
 }
 
 // ============== BALANCE CARD ==============
@@ -487,7 +487,7 @@ async function renderBalanceCard(data) {
   }
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
 
-  return { buffer: await canvas.encode('png'), name: 'balance.png' };
+  return require('./motion').animateCanvas(canvas, 'balance.png');
 }
 
 
@@ -549,7 +549,7 @@ async function renderLeaderboardCard(data) {
     ctx.textAlign = 'left';
   }
 
-  return { buffer: await canvas.encode('png'), name: 'leaderboard.png' };
+  return require('./motion').animateCanvas(canvas, 'leaderboard.png');
 }
 
 // ============== LEVEL UP CARD ==============
@@ -615,7 +615,7 @@ async function renderLevelUpCard(data) {
     ctx.fillStyle = pg; roundRect(ctx, bx, by, Math.max(18, bw * Math.min(1, xp / nextXP)), bh, 9); ctx.fill();
   }
   ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
-  return { buffer: await canvas.encode('png'), name: 'levelup.png' };
+  return require('./motion').animateCanvas(canvas, 'levelup.png');
 }
 
 // ============== BATTLE CARD ==============
@@ -664,7 +664,7 @@ async function renderBattleCard(data) {
   drawBar(40, 350, 380, playerHp, playerMaxHp, '#2ecc71', 'HP');
   drawBar(W - 40 - 380, 400, 380, enemyHp, enemyMaxHp, '#e74c3c', 'HP');
 
-  return { buffer: await canvas.encode('png'), name: 'battle.png' };
+  return require('./motion').animateCanvas(canvas, 'battle.png');
 }
 
 // ============== FARM CARD ==============
@@ -706,7 +706,7 @@ async function renderFarmCard(data) {
     x += boxW + gap;
     if (x + boxW > W) { x = 30; y += boxH + gap; }
   }
-  return { buffer: await canvas.encode('png'), name: 'farm.png' };
+  return require('./motion').animateCanvas(canvas, 'farm.png');
 }
 
 // v19: البطاقات الرئيسية تستخدم تصميم cardKit الجديد
