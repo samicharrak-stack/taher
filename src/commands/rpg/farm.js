@@ -245,12 +245,9 @@ async function getPayload(interaction, u, opts = {}) {
 
   const nextReady = farm.plots.filter(p => p.type && Date.now() < p.readyAt).sort((a, b) => a.readyAt - b.readyAt)[0];
 
-  const weatherImg = WEATHER_IMAGES[farm.weather.type] || WEATHER_IMAGES.sunny;
   const embed = new EmbedBuilder()
     .setColor(COLORS.success)
     .setTitle(`🌾 مزرعة ${interaction.member?.displayName || interaction.user.username}`)
-    .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
-    .setImage(weatherImg)
     .setDescription([
       `${DESIGN.thin_separator}`,
       `${w.emoji} **الطقس:** ${w.name} • ينتهي: **${timeLeft(farm.weather.until - Date.now())}**`,
@@ -295,6 +292,9 @@ async function getPayload(interaction, u, opts = {}) {
     new ButtonBuilder().setCustomId('farm_store_all').setLabel('تخزين الكل 📦').setStyle(ButtonStyle.Secondary),
     new ButtonBuilder().setCustomId('farm_expand').setLabel(`توسيع +1 (${(farm.plots.length * 5000).toLocaleString()} 💎)`).setStyle(ButtonStyle.Secondary).setDisabled(farm.plots.length >= 16)
   );
+  const row4 = new ActionRowBuilder().addComponents(
+    new ButtonBuilder().setCustomId('farm_seeds').setLabel('بذور وخضار 🌱').setStyle(ButtonStyle.Success)
+  );
 
   const files = await attachCard(embed, farmCard({
     username: interaction.member?.displayName || interaction.user.username,
@@ -309,23 +309,31 @@ async function getPayload(interaction, u, opts = {}) {
   if (files.length) {
     // البطاقة تعرض الحقل كاملاً — الوصف يبقى مختصراً ومفيداً
     embed.setThumbnail(null).setDescription([
-      ready ? `✅ **${ready}** قطعة جاهزة للحصاد — اضغط «حصاد الكل»` : nextReady ? `⏳ التالي: ${CROPS[nextReady.type].emoji} **${CROPS[nextReady.type].name}** خلال **${timeLeft(nextReady.readyAt - Date.now())}**` : empty ? `🌱 لديك **${empty}** قطعة فارغة — اختر قطعة من القائمة لتزرع` : null,
+      ready ? `✅ **${ready}** قطعة جاهزة للحصاد — اضغط «حصاد الكل»` : nextReady ? `⏳ التالي: ${CROPS[nextReady.type].emoji} **${CROPS[nextReady.type].name}** خلال **${timeLeft(nextReady.readyAt - Date.now())}**` : empty ? `🌱 لديك **${empty}** قطعة فارغة — اشترِ البذور من زر «بذور وخضار» ثم اختر القطعة` : null,
       barnReady ? `🐄 **${barnReady}** حيوان لديه منتج جاهز في الحظيرة` : null,
       pests ? `🐛 **${pests}** قطعة مصابة — استخدم المبيد` : null,
       `${w.emoji} ${w.name} • نمو x${(1 / w.growMul).toFixed(1)} • أرباح x${w.yieldMul}`,
     ].filter(Boolean).join('\n'));
   }
-  return { content: null, embeds: [embed], components: [row1, row2, row3], files, attachments: [] };
+  return { content: null, embeds: [embed], components: [row1, row2, row3, row4], files, attachments: [] };
 }
 
 /** يرفق بطاقة صورة بالـ embed (إن فشل الرسم يبقى الـ embed كما هو) */
-async function attachCard(embed, promise) {
+async function attachCard(embed, promise, command = 'farm') {
+  const { introGif } = require('../../utils/gameMedia');
   try {
     const card = await promise;
-    if (!card) return [];
-    embed.setImage(`attachment://${card.name}`);
-    return [new AttachmentBuilder(card.buffer, { name: card.name })];
-  } catch { return []; }
+    if (card) {
+      embed.setImage(`attachment://${card.name}`);
+      const g = introGif(command);
+      const files = [new AttachmentBuilder(card.buffer, { name: card.name })];
+      if (g) { embed.setThumbnail(g.url); files.push(g.file); }
+      return files;
+    }
+  } catch {}
+  const g = introGif(command);
+  if (g) { embed.setImage(g.url); return [g.file]; }
+  return [];
 }
 
 
@@ -336,7 +344,7 @@ async function getShopPayload(interaction, u) {
   const inv = inventoryValue(farm);
   const embed = new EmbedBuilder().setColor(0x8be04e).setTitle('🛒 متجر المزرعة')
     .setDescription([
-      'ترقيات دائمة تطوّر مزرعتك، ومستهلكات توفر عليك.',
+      'ترقيات ومستهلكات. البذور والخضار من زر «بذور وخضار 🌱» في الحقل.',
       `📦 مخزونك: **${inv.count}** محصول — قيمة البيع **${inv.total.toLocaleString()}** 💎${hasItem(farm, 'silo') ? ' (+25% صومعة)' : ' (−20% بدون صومعة)'}`,
       `🧪 سماد: **${stock(farm, 'fertilizer')}** · 🧴 مبيد: **${stock(farm, 'pesticide')}** · 🍀 بذرة حظ: **${stock(farm, 'lucky_seed')}**`,
     ].join('\n'));
@@ -363,6 +371,40 @@ async function getShopPayload(interaction, u) {
   return { content: null, embeds: [embed], files, attachments: [], components: rows };
 }
 
+// ======== بذور وخضار ========
+function seedKey(crop) { return `seed_${crop}`; }
+async function getSeedPayload(interaction, u) {
+  const farm = u.farm;
+  farm.stock = farm.stock || {};
+  const embed = new EmbedBuilder().setColor(0x8be04e).setTitle('🌱 بذور وخضار')
+    .setDescription('هنا تشتري البذور. بعد الشراء ارجع للحقل، اختر قطعة فارغة، وازرع. إذا عندك بذرة في المخزون تُزرع مجاناً.');
+  const items = Object.entries(CROPS).map(([k, c]) => ({
+    emoji: c.emoji, name: `بذور ${c.name}`, desc: `بيع ${c.sell.toLocaleString()} • ${Math.round(c.grow / 60000)} د`,
+    price: c.cost, locked: (c.levelReq || 1) > farm.level, lockText: `مستوى ${c.levelReq}`,
+    count: stock(farm, seedKey(k)),
+  }));
+  const files = await attachCard(embed, require('../../utils/modernCards').shopGridCard({
+    title: 'بذور وخضار', subtitle: 'اختر البذرة من القائمة', icon: '🌱', balance: u.balance || 0, items,
+    footer: '×5 أوفر: تدفع سعر 4 حبات',
+  }));
+  const opts = [];
+  for (const [k, c] of Object.entries(CROPS)) {
+    const lock = (c.levelReq || 1) > farm.level;
+    opts.push({ label: `${c.name} ×1 — ${c.cost.toLocaleString()} 💎`.slice(0, 100), value: `1:${k}`, description: (lock ? `يتطلب مستوى ${c.levelReq} • ` : `مخزون ${stock(farm, seedKey(k))} • `) + `بيع ${c.sell.toLocaleString()}`, emoji: c.emoji });
+    opts.push({ label: `${c.name} ×5 — ${(c.cost * 4).toLocaleString()} 💎`.slice(0, 100), value: `5:${k}`, description: lock ? `يتطلب مستوى ${c.levelReq}` : 'رزمة أوفر', emoji: c.emoji });
+  }
+  return {
+    content: null, embeds: [embed], files, attachments: [],
+    components: [
+      new ActionRowBuilder().addComponents(new StringSelectMenuBuilder().setCustomId('farm_seed_buy').setPlaceholder('🌱 اشترِ بذوراً...').addOptions(opts.slice(0, 25))),
+      new ActionRowBuilder().addComponents(
+        new ButtonBuilder().setCustomId('farm_shop').setLabel('ترقيات المتجر 🛒').setStyle(ButtonStyle.Secondary),
+        new ButtonBuilder().setCustomId('farm_back').setLabel('رجوع للحقل ↩️').setStyle(ButtonStyle.Secondary),
+      ),
+    ],
+  };
+}
+
 // ======== BARN PAYLOAD ========
 async function getBarnPayload(interaction, u) {
   const farm = u.farm;
@@ -373,7 +415,6 @@ async function getBarnPayload(interaction, u) {
   const embed = new EmbedBuilder()
     .setColor(0xFF9F43)
     .setTitle('🐄 الحظيرة')
-    .setImage(ACTION_GIFS.barn)
     .setDescription([
       `${DESIGN.thin_separator}`,
       `**حيواناتك (${farm.barn.length}/6):**`,
@@ -417,7 +458,6 @@ async function getCraftPayload(u) {
   const embed = new EmbedBuilder()
     .setColor(0x8E6CFF)
     .setTitle('🍳 قائمة الصنع')
-    .setImage(ACTION_GIFS.craft)
     .setDescription([
       `${DESIGN.thin_separator}`,
       Object.entries(RECIPES).map(([k, r]) => {
@@ -463,7 +503,6 @@ async function getMarketPayload(u) {
   const embed = new EmbedBuilder()
     .setColor(0x4FA3FF)
     .setTitle('📊 سوق المزرعة')
-    .setImage('https://media1.giphy.com/media/3oKIPEqDGUULpEU0aQ/giphy.gif')
     .setDescription([
       `${DESIGN.thin_separator}`,
       `**أسعار السوق اليوم:**`,
@@ -564,7 +603,8 @@ module.exports = {
     const g = readGuild(guildId);
     const u = getUser(g, interaction.user.id);
     writeGuild(guildId, g);
-    const payload = await getPayload(interaction, u);
+    const trig = String(interaction.options?._trigger || '');
+    const payload = /بذر|خضار|خضروات/.test(trig) ? await getSeedPayload(interaction, u) : await getPayload(interaction, u);
     const msg = await interaction.editReply(payload).catch(() => null);
     if (msg?.id) {
       FARM_OWNERS.set(msg.id, interaction.user.id);
@@ -600,6 +640,10 @@ async function handleButton(interaction) {
   if (key === 'farm_shop') {
     writeGuild(guildId, g);
     return interaction.update(await getShopPayload(interaction, u)).catch(() => {});
+  }
+  if (key === 'farm_seeds') {
+    writeGuild(guildId, g);
+    return interaction.update(await getSeedPayload(interaction, u)).catch(() => {});
   }
   if (key === 'farm_store_all') {
     const ready = farm.plots.filter(p => p.type && Date.now() >= p.readyAt && !p.pest && !p.frozen);
@@ -854,20 +898,42 @@ async function handleSelect(interaction) {
     return interaction.followUp({ content: msg, ephemeral: true }).catch(() => {});
   }
 
+  if (interaction.customId === 'farm_seed_buy') {
+    const [qtyStr, cropKey] = interaction.values[0].split(':');
+    const c = CROPS[cropKey];
+    const qty = qtyStr === '5' ? 5 : 1;
+    farm.stock = farm.stock || {};
+    let msg;
+    if (!c) msg = '❌ بذرة غير معروفة.';
+    else if ((c.levelReq || 1) > farm.level) msg = `🔒 بذور **${c.name}** تحتاج مستوى مزرعة **${c.levelReq}**.`;
+    else if ((u.balance || 0) < (qty === 5 ? c.cost * 4 : c.cost)) msg = `❌ تحتاج **${(qty === 5 ? c.cost * 4 : c.cost).toLocaleString()}** 💎.`;
+    else {
+      const price = qty === 5 ? c.cost * 4 : c.cost;
+      u.balance -= price;
+      farm.stock[seedKey(cropKey)] = stock(farm, seedKey(cropKey)) + qty;
+      msg = `🌱 اشتريت ${c.emoji} **بذور ${c.name}** ×${qty}. ارجع للحقل واختر قطعة فارغة للزراعة.`;
+      writeGuild(guildId, g);
+    }
+    await interaction.update(await getSeedPayload(interaction, u)).catch(() => {});
+    return interaction.followUp({ content: msg, ephemeral: true }).catch(() => {});
+  }
+
   if (interaction.customId === 'farm_plant_pick') {
     const [idxStr, cropKey] = interaction.values[0].split(':');
     const idx = parseInt(idxStr); const c = CROPS[cropKey]; const plot = farm.plots[idx];
-    if (!c || (c.levelReq || 1) > farm.level || plot.type || u.balance < c.cost) {
+    const hasSeed = stock(farm, seedKey(cropKey)) > 0;
+    if (!c || (c.levelReq || 1) > farm.level || plot.type || (!hasSeed && u.balance < c.cost)) {
       await interaction.update(await getPayload(interaction, u)).catch(() => {});
-      let errMsg = !c ? '❌ بذرة غير صحيحة.' : (c.levelReq || 1) > farm.level ? `❌ تحتاج مستوى مزرعة ${c.levelReq}.` : plot.type ? '❌ القطعة مشغولة.' : `❌ تحتاج ${c.cost} 💎 لشراء هذه البذرة.`;
+      let errMsg = !c ? '❌ بذرة غير صحيحة.' : (c.levelReq || 1) > farm.level ? `❌ تحتاج مستوى مزرعة ${c.levelReq}.` : plot.type ? '❌ القطعة مشغولة.' : `❌ تحتاج ${c.cost} 💎 أو بذرة من زر «بذور وخضار».`;
       return interaction.followUp({ content: errMsg, ephemeral: true }).catch(() => {});
     }
-    u.balance -= c.cost;
+    const seeded = useStock(farm, seedKey(cropKey));
+    if (!seeded) u.balance -= c.cost;
     const grow = Math.floor(c.grow * w.growMul);
     farm.plots[idx] = { type: cropKey, plantedAt: Date.now(), readyAt: Date.now() + grow };
     writeGuild(guildId, g);
     await interaction.update(await getPayload(interaction, u)).catch(() => {});
-    return interaction.followUp({ content: `🌱 زرعت ${c.emoji} **${c.name}** في قطعة ${idx + 1} • ينضج خلال **${timeLeft(grow)}**${c.rare ? ' ⭐' : ''}`, ephemeral: true }).catch(() => {});
+    return interaction.followUp({ content: `🌱 زرعت ${c.emoji} **${c.name}** في قطعة ${idx + 1} • ${seeded ? 'من مخزون البذور' : `دفعت ${c.cost.toLocaleString()} 💎`} • ينضج خلال **${timeLeft(grow)}**${c.rare ? ' ⭐' : ''}`, ephemeral: true }).catch(() => {});
   }
 
   if (interaction.customId === 'farm_barn_action') {

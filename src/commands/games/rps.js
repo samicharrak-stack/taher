@@ -5,7 +5,11 @@ const kit = require('../../utils/cardKit');
 async function withCard(embed, data) {
   try {
     const card = await kit.rpsCard(data);
-    if (card) { embed.setImage(`attachment://${card.name}`); return [new AttachmentBuilder(card.buffer, { name: card.name })]; }
+    const g = require('../../utils/gameMedia').introGif('rps');
+    const files = [];
+    if (card) { embed.setImage(`attachment://${card.name}`); files.push(new AttachmentBuilder(card.buffer, { name: card.name })); }
+    if (g) { embed.setThumbnail(g.url); files.push(g.file); }
+    if (files.length) return files;
   } catch {}
   return [];
 }

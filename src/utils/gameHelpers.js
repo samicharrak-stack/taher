@@ -89,17 +89,39 @@ function gameEmbed(interaction, title, description, color = COLORS.primary) {
 
 // Tracks pending GIF attachments to auto-attach via safeReply.
 const _pendingGifs = new WeakMap();
-function _attachGif(embed, game, state) {
+function queueGif(embed, file) {
+  if (embed && file) _pendingGifs.set(embed, file);
+  return embed;
+}
+function takeQueuedGif(embed) {
+  return embed ? _pendingGifs.get(embed) : null;
+}
+/** يضع GIF محلي كصورة الإمبد ويجهّزه للإرفاق تلقائياً */
+function applyLocalGif(embed, game, state) {
   try {
-    if (!game) return embed;
+    if (!embed || !game) return null;
     const { pickGifAttachment } = require('./gameMedia');
     const r = pickGifAttachment(game, state);
-    if (r) {
-      embed.setImage(r.url);
-      _pendingGifs.set(embed, r.file);
-    }
-  } catch {}
+    if (!r) return null;
+    embed.setImage(r.url);
+    queueGif(embed, r.file);
+    return r;
+  } catch { return null; }
+}
+function _attachGif(embed, game, state) {
+  applyLocalGif(embed, game, state);
   return embed;
+}
+/** ملفات GIF المرتبطة بالإمبدات — للمكالمات التي تستخدم editReply مباشرة */
+function mediaFilesFor(embeds = []) {
+  const files = [];
+  const seen = new Set();
+  for (const e of embeds) {
+    const f = takeQueuedGif(e);
+    const img = e?.data?.image?.url || '';
+    if (f && img === `attachment://${f.name}` && !seen.has(f.name)) { files.push(f); seen.add(f.name); }
+  }
+  return files;
 }
 
 function winEmbed(interaction, title, description, game = null) {
@@ -216,5 +238,5 @@ module.exports = {
   validateBet, brandedEmbed, gameEmbed, gifEmbed,
   winEmbed, loseEmbed, tieEmbed, errorEmbed,
   luckBonus, balanceFooter, playAgainRow, disabledRow, safeReply, progressBar,
-  pickGif
+  pickGif, queueGif, takeQueuedGif, applyLocalGif, mediaFilesFor
 };

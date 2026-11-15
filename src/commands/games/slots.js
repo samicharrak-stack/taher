@@ -2,7 +2,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, Embed
 const {
   fmt, validateBet, saveUser, bumpStat, luckBonus,
   brandedEmbed, winEmbed, loseEmbed,
-  balanceFooter, playAgainRow, safeReply, CURRENCY
+  balanceFooter, playAgainRow, safeReply, mediaFilesFor, CURRENCY
 } = require('../../utils/gameHelpers');
 const { COLORS } = require('../../utils/embeds');
 const { setEmbedMedia } = require('../../utils/mediaRegistry');
@@ -68,7 +68,7 @@ module.exports = {
       .setDescription(`💰 الرهان: **${fmt(bet)}** ${CURRENCY}\n\n` + reelBox([reels[0].s, reels[1].s, '🎲']) + `\n*🎲 البكرة الأخيرة...*`)
       .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }));
     setEmbedMedia(mid1, 'slots', 'spin');
-    await interaction.editReply({ embeds: [mid1] }).catch(() => {});
+    await interaction.editReply({ embeds: [mid1], files: mediaFilesFor([mid1]) }).catch(() => {});
     await new Promise(r => setTimeout(r, 600));
 
     // ─── Calculate Result ─────────────────────────────────
