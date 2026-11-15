@@ -3,7 +3,7 @@ const kit = require('../../utils/cardKit');
 const {
   fmt, validateBet, saveUser, bumpStat, luckBonus,
   brandedEmbed, winEmbed, loseEmbed, tieEmbed,
-  balanceFooter, safeReply, CURRENCY, getUser
+  balanceFooter, safeReply, mediaFilesFor, CURRENCY, getUser
 } = require('../../utils/gameHelpers');
 const { COLORS } = require('../../utils/embeds');
 const { setEmbedMedia } = require('../../utils/mediaRegistry');
@@ -126,7 +126,7 @@ module.exports = {
       const again = new ActionRowBuilder().addComponents(
         new ButtonBuilder().setCustomId(`roulette_play_${bet}`).setLabel('🎡 جولة أخرى').setStyle(ButtonStyle.Primary)
       );
-      await interaction.editReply({ embeds: [finalEmbed], components: [again], files, attachments: [] }).catch(() => {});
+      await interaction.editReply({ embeds: [finalEmbed], components: [again], files: [...files, ...mediaFilesFor([finalEmbed])], attachments: [] }).catch(() => {});
     };
 
     // رهان مباشر من الأمر: «روليت 500 احمر»

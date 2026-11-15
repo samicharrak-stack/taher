@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require('discord.js');
 const {
   fmt, getUser, saveUser, bumpStat,
   brandedEmbed, winEmbed, loseEmbed,
-  balanceFooter, playAgainRow, safeReply, errorEmbed, CURRENCY
+  balanceFooter, playAgainRow, safeReply, mediaFilesFor, errorEmbed, CURRENCY
 } = require('../../utils/gameHelpers');
 const { COLORS } = require('../../utils/embeds');
 const { setEmbedMedia } = require('../../utils/mediaRegistry');
@@ -74,7 +74,7 @@ module.exports = {
     for (let fi = 1; fi < 4; fi++) {
       await new Promise(r => setTimeout(r, 500));
       cast.setDescription(`${WATER_FRAMES[fi]}\n\n🎣 *${['تتحرك...','شيء تحت الماء!','حركة قوية!'][fi-1]}*\n\n${WATER_FRAMES[fi]}`);
-      await interaction.editReply({ embeds: [cast] }).catch(() => {});
+      await interaction.editReply({ embeds: [cast], files: mediaFilesFor([cast]) }).catch(() => {});
     }
     await new Promise(r => setTimeout(r, 600));
 
@@ -91,7 +91,7 @@ module.exports = {
       u.xp = (u.xp || 0) + 5;
       loseE.setFooter({ text: `تعويض الصيد: +15 ${CURRENCY} · +5 XP` });
       saveUser(guildId, g);
-      return interaction.editReply({ embeds: [loseE], components: [] }).catch(() => {});
+      return interaction.editReply({ embeds: [loseE], components: [], files: mediaFilesFor([loseE]) }).catch(() => {});
     }
 
     // ─── Catch! ──────────────────────────────────────────
@@ -133,6 +133,6 @@ module.exports = {
       .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
       .setFooter(balanceFooter(u));
 
-    await interaction.editReply({ embeds: [resultEmbed], components: [] }).catch(() => {});
+    await interaction.editReply({ embeds: [resultEmbed], components: [], files: mediaFilesFor([resultEmbed]) }).catch(() => {});
   }
 };

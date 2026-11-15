@@ -11,17 +11,24 @@ const GIF_DIR = path.resolve(__dirname, '../../assets/gifs');
 
 // خريطة: لعبة + حالة → اسم ملف GIF
 const MAP = {
-  slots:       { spin: 'slots_spin', win: 'win',  jackpot: 'jackpot', lose: 'lose' },
-  roulette:    { spin: 'dice',       win: 'win',  lose: 'lose' },
-  blackjack:   { deal: 'cards',      win: 'win',  bust: 'lose' },
-  rps:         { play: 'dice',       win: 'win',  lose: 'lose', tie: 'tie' },
-  race:        { start: 'loading',   win: 'win',  lose: 'lose' },
-  fish:        { cast: 'loading',    catch: 'win', miss: 'lose' },
+  slots:       { spin: 'cmd_slots', win: 'win',  jackpot: 'jackpot', lose: 'lose' },
+  roulette:    { spin: 'cmd_roulette', win: 'win',  lose: 'lose' },
+  blackjack:   { deal: 'cmd_blackjack', win: 'win',  bust: 'lose' },
+  rps:         { play: 'cmd_rps', win: 'win',  lose: 'lose', tie: 'tie' },
+  race:        { start: 'cmd_race', win: 'win',  lose: 'lose' },
+  fish:        { cast: 'cmd_fish', catch: 'win', miss: 'lose', legendary: 'jackpot' },
+  coinflip:    { flip: 'cmd_coinflip', win: 'win', lose: 'lose' },
+  crash:       { play: 'cmd_crash', win: 'win', lose: 'lose' },
+  scratch:     { play: 'cmd_scratch', win: 'win', lose: 'lose' },
+  treasure:    { play: 'cmd_treasure', win: 'win', lose: 'lose' },
+  highlow:     { play: 'cmd_highlow', win: 'win', lose: 'lose' },
+  guess:       { think: 'cmd_guess', win: 'win',  lose: 'lose' },
+  dice:        { roll: 'cmd_dice', win: 'win', lose: 'lose' },
+  minesweeper: { play: 'cmd_minesweeper', boom: 'lose', win: 'win' },
+  farm:        { play: 'cmd_farm', plant: 'cmd_farm', harvest: 'win' },
   snake:       { play: 'loading' },
   memory:      { play: 'cards' },
   sort:        { play: 'loading' },
-  minesweeper: { play: 'loading',    boom: 'lose', win: 'win' },
-  guess:       { think: 'dice',      win: 'win',  lose: 'lose' },
   emoji:       { play: 'loading' },
   challenge:   { play: 'dice' },
   rob:         { sneak: 'loading',   caught: 'lose', win: 'win' },
@@ -89,13 +96,17 @@ function attachIntroGif(interaction, key) {
           const { EmbedBuilder } = require('discord.js');
           const e = payload.embeds[0];
           const data = e?.toJSON ? e.toJSON() : e;
-          const hasImageFile = (payload.files || []).some((f) => /\.(png|jpe?g|gif|webp)$/i.test(f?.name || f?.attachment?.name || ''));
           const isError = data?.color === 0xE8455F || data?.color === 0xff4757;
-          const hasButtons = Array.isArray(payload.components) && payload.components.length > 0;
-          if (data && !data.image?.url && !hasImageFile && !isError && !hasButtons) {
-            const g = introGif(key);
+          const g = introGif(key);
+          if (data && g && !isError && !String(data.image?.url || '').includes(g.name) && !String(data.thumbnail?.url || '').includes(g.name)) {
+            const embed = new EmbedBuilder(data);
+            // البطاقة المرسومة تبقى الصورة الكبيرة، وGIF الأمر يجلس في الزاوية
+            if (data.image?.url) embed.setThumbnail(g.url);
+            else embed.setImage(g.url);
             used = true; keptUrl = g.url;
-            payload = { ...payload, embeds: [new EmbedBuilder(data).setImage(g.url), ...payload.embeds.slice(1)], files: [...(payload.files || []), g.file] };
+            const files = [...(payload.files || [])];
+            if (!files.some((f) => (f?.name || f?.attachment?.name) === g.name)) files.push(g.file);
+            payload = { ...payload, embeds: [embed, ...payload.embeds.slice(1)], files };
           }
         }
         else if (keptUrl && payload && typeof payload === 'object' && Array.isArray(payload.embeds) && payload.embeds.length && !Array.isArray(payload.attachments)) {
