@@ -1,0 +1,52 @@
+{
+  "prefix": "/",
+  "users": {
+    "u1": {
+      "balance": 1000,
+      "xp": 0,
+      "level": 1,
+      "farm": {
+        "plots": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
+        ],
+        "barn": [],
+        "inventory": {},
+        "streak": 0,
+        "totalHarvested": 0,
+        "level": 1,
+        "xp": 0,
+        "weather": {
+          "type": "sunny",
+          "until": 1794765784967
+        },
+        "season": 0,
+        "day": 1,
+        "stock": {},
+        "items": {},
+        "lastDayAt": 1794763984967
+      }
+    }
+  },
+  "xpData": {},
+  "xp": {
+    "enabled": true,
+    "min": 15,
+    "max": 25,
+    "cooldown": 60000
+  },
+  "welcome": {
+    "enabled": false,
+    "channel": null,
+    "message": "**أهلًا وسهلًا {user} في {server}!**\n\n✨ نتمنى لك وقتاً ممتعاً معنا\n📌 اطلع على القوانين واختر رتبتك\n🔗 ادعُ أصدقاءك: {invite}"
+  },
+  "settings": {},
+  "templates": {},
+  "roles": {},
+  "channels": {},
+  "lang": "en"
+}

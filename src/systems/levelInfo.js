@@ -1,0 +1,118 @@
+// 📈 levelInfo v21 — معلومات المستوى الموحدة (الترتيب في السيرفر، اللقب، المكافأة القادمة، الشارات، سلسلة النشاط)
+const config = require('../config');
+
+/** مسارات مرتبة: كل مسار يغطي شريحة مستويات وله لون ثابت في البطاقات */
+const TRACKS = [
+  { id: 'start', from: 1, to: 9, name: 'البداية', color: '#34f5c5' },
+  { id: 'active', from: 10, to: 24, name: 'النشاط', color: '#5ee7ff' },
+  { id: 'star', from: 25, to: 49, name: 'النجوم', color: '#7b6cff' },
+  { id: 'elite', from: 50, to: 74, name: 'النخبة', color: '#ffd166' },
+  { id: 'legend', from: 75, to: 99, name: 'الأساطير', color: '#ff5e8a' },
+  { id: 'myth', from: 100, to: Infinity, name: 'ما بعد الأسطورة', color: '#f4f7ff' },
+];
+
+/** ألقاب حسب المستوى — مرتبة تصاعدياً داخل المسارات */
+const TITLES = [
+  [1, '🌱 عضو جديد'], [5, '💬 متفاعل'], [10, '⭐ نشيط'], [15, '🔥 مميز'], [20, '💎 نجم السيرفر'],
+  [25, '✨ نجم صاعد'], [30, '👑 نخبة'], [40, '🌌 أسطورة'], [50, '🐉 أسطورة خالدة'],
+  [60, '🏅 حارس السيرفر'], [75, '☄️ كائن كوني'], [100, '♾️ ما بعد الأسطورة'],
+];
+const titleFor = (level) => {
+  let t = TITLES[0][1];
+  for (const [l, name] of TITLES) if (level >= l) t = name;
+  return t;
+};
+
+function trackFor(level) {
+  return TRACKS.find((t) => level >= t.from && level <= t.to) || TRACKS[0];
+}
+
+/** اللقب التالي وكم مستوى يفصله */
+function nextTitle(level) {
+  const nxt = TITLES.find(([l]) => l > level);
+  if (!nxt) return null;
+  return { level: nxt[0], name: nxt[1], left: nxt[0] - level };
+}
+
+/** شارات تلقائية من الإحصائيات */
+function badgesFor(u = {}) {
+  const s = u.stats || {};
+  const b = [];
+  if ((u.prestige || 0) > 0) b.push('🌟');
+  if ((u.dungeon_wins || 0) >= 10) b.push('⚔️');
+  if ((u.farm?.totalHarvested || 0) >= 50) b.push('🌾');
+  if ((s.messages_count || 0) >= 1000) b.push('💬');
+  if ((u.balance || 0) >= 100000) b.push('💰');
+  if ((u.xp_streak || 0) >= 7) b.push('🔥');
+  if ((s.slots_wins || 0) + (s.roulette_wins || 0) + (s.bj_wins || 0) >= 25) b.push('🎰');
+  if ((u.shadow_army || []).length >= 10) b.push('🌑');
+  return b;
+}
+
+/** ترتيب العضو في السيرفر حسب الخبرة الكلية */
+function serverRank(g, userId) {
+  const list = Object.entries(g.users || {})
+    .filter(([, x]) => (x.xp || 0) > 0)
+    .sort(([, a], [, b]) => ((b.prestige || 0) - (a.prestige || 0)) || ((b.xp || 0) - (a.xp || 0)));
+  const idx = list.findIndex(([id]) => id === userId);
+  return { rank: idx >= 0 ? idx + 1 : list.length + 1, totalUsers: Math.max(list.length, 1) };
+}
+
+/** أقرب رتبة مستوى قادمة (من levelroles) */
+function nextLevelRole(g, guild, level) {
+  const entries = Object.entries(g.levelRoles || {})
+    .map(([l, roles]) => [parseInt(l, 10), roles])
+    .filter(([l, roles]) => l > level && Array.isArray(roles) && roles.length)
+    .sort((a, b) => a[0] - b[0]);
+  if (!entries.length) return null;
+  const [lvl, roles] = entries[0];
+  const role = guild?.roles?.cache?.get(roles[0]);
+  return { level: lvl, name: role?.name || 'رتبة جديدة' };
+}
+
+/** اسم الرتبة الممنوحة عند هذا المستوى بالضبط */
+function roleAtLevel(g, guild, level) {
+  const roles = g.levelRoles?.[String(level)];
+  if (!Array.isArray(roles) || !roles.length) return null;
+  return guild?.roles?.cache?.get(roles[0])?.name || null;
+}
+
+/**
+ * سلسلة النشاط اليومي: كل يوم متتالٍ فيه تفاعل يرفع مضاعف الخبرة 5% (حتى +50%).
+ * أول رسالة في اليوم تمنح مكافأة +50 XP. يُرجع { mult, dailyBonus, streak }.
+ */
+function touchStreak(u, now = Date.now()) {
+  // v27: يعتمد على نظام الستريك الموحّد (دروع + محطات + مضاعف موحّد)
+  const r = require('./streak').touch(u, now);
+  // الخبرة: +5% لكل يوم حتى +50% (المضاعف الاقتصادي في streak.multOf أخف: +1% يومياً)
+  const xpMult = 1 + Math.min(0.5, Math.max(0, (r.count || 1) - 1) * 0.05);
+  return { mult: xpMult, dailyBonus: r.dailyBonus, streak: r.count || 1, info: r };
+}
+
+/** لقطة كاملة لبطاقة المستوى */
+function levelSnapshot(g, guild, userId, xpForLevel) {
+  const u = g.users?.[userId] || { xp: 0, level: 1, balance: 0 };
+  const total = u.xp || 0;
+  // المستوى المخزن قد يتأخر عن الخبرة الفعلية — نعرض الأعلى
+  let level = u.level || 1;
+  while (xpForLevel(level + 1) <= total) level++;
+  const base = xpForLevel(level), next = xpForLevel(level + 1);
+  const { rank, totalUsers } = serverRank(g, userId);
+  const nr = nextLevelRole(g, guild, level);
+  let nextReward = null;
+  try {
+    const { getRewardConfig, rewardForLevel } = require('./levelRewards');
+    const gems = rewardForLevel(getRewardConfig(g), level + 1);
+    const parts = [];
+    if (gems) parts.push(`${gems.toLocaleString('en-US')} ${config.CURRENCY || '💎'}`);
+    if (nr) parts.push(nr.level === level + 1 ? `رتبة ${nr.name}` : `رتبة ${nr.name} عند المستوى ${nr.level}`);
+    nextReward = parts.join(' + ') || null;
+  } catch {}
+  return {
+    u, level, totalXP: total, xp: Math.max(0, total - base), nextXP: Math.max(1, next - base),
+    rank, totalUsers, prestige: u.prestige || 0, title: titleFor(level), track: trackFor(level), nextTitle: nextTitle(level),
+    nextReward, badges: badgesFor(u), streak: u.xp_streak || 0,
+  };
+}
+
+module.exports = { TITLES, TRACKS, titleFor, trackFor, nextTitle, badgesFor, serverRank, nextLevelRole, roleAtLevel, touchStreak, levelSnapshot };
